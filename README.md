@@ -23,6 +23,7 @@ The AI generator is **not live until** `GEMINI_API_KEY` is configured in Cloudfl
 The n8n exporter creates an **inactive scaffold**, not a production-ready integration. It uses placeholder actions and placeholder validation conditions. Import the output into a current n8n instance, wire decision branches and human approval behavior, add persistent idempotency storage, configure credentials and test all failure cases in a sandbox before using it in production or selling it as tested.
 
 ## Local development
+The social preview asset is `public/og-image.svg`; page metadata references it for sharing cards.
 Requires Node.js 20 or newer.
 
 ```bash
