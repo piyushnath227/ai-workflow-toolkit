@@ -1,0 +1,15 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="A Safer Way to Add AI to Business Workflows | AI Workflow Toolkit" description="Practical safeguards for AI-assisted business processes: limited permissions, verification, and human approval.">
+  <div class="wrap"><article class="article"><div class="page-hero"><span class="eyebrow">AI workflows · 8 min read</span><h1>Add AI to workflows, <span class="gradient">without losing control.</span></h1><p>AI can help classify requests, summarize documents and draft responses. Reliability comes from designing the process around the model—not expecting a model to handle every decision alone.</p></div>
+  <h2>Give the AI a narrow job</h2><p>Start with a bounded task such as labeling an incoming request or summarizing a document into a known format. Define the inputs, output fields and what the system should do when it is unsure. Narrow tasks are easier to test than broad instructions like “run my business.”</p>
+  <h2>Separate suggestions from actions</h2><p>Generating a draft is different from sending it. Reading a record is different from modifying it. Begin with read-only access and draft-only behavior. Add the ability to take action only when the use case justifies it and the safeguards have been tested.</p>
+  <h2>Verify important outputs</h2><p>Check required fields, permitted values and whether the output matches the source data. For consequential decisions, use a qualified human reviewer. Do not treat fluent language as proof that a claim is correct.</p>
+  <h2>Protect information and permissions</h2><p>Send only the data needed for the task. Avoid putting secrets or unnecessary personal information into prompts and logs. Use least-privilege credentials, keep keys out of source control and follow your organization's privacy and retention requirements.</p>
+  <h2>Plan for failure</h2><p>Decide what happens when the model times out, a tool fails, the response is malformed or the same event is processed twice. Use bounded retries, clear error logs and an easy manual fallback. Do not allow an uncertain output to silently trigger a high-impact action.</p>
+  <h2>Test with realistic examples</h2><p>Build a small set of normal, edge and ambiguous examples. Track accuracy, failure types, time saved and how often people override the result. Re-test after changing prompts, models, tools or source data.</p>
+  <div class="article-callout"><strong>Start safely:</strong> Let AI draft or classify; validate the result; ask a human to approve actions that matter.</div>
+  <a class="btn btn-primary article-cta" href="/guides/">Explore more workflow guides ↗</a>
+  </article></div>
+</BaseLayout>
