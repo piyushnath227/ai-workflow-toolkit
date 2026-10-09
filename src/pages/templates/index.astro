@@ -1,0 +1,13 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const packs = [
+  {title:"Client onboarding",description:"Validate a new client, prevent duplicate projects, require welcome-email approval and verify handoff.",file:"client-onboarding.json",tag:"Client operations"},
+  {title:"Lead follow-up",description:"Check lead data and consent, assign an owner, approve outreach and prevent duplicate contact.",file:"lead-follow-up.json",tag:"Sales"},
+  {title:"Weekly client report",description:"Collect source data, validate completeness, draft a report and require human review before distribution.",file:"weekly-client-report.json",tag:"Reporting"},
+  {title:"Content approval",description:"Validate briefs, create draft tasks, collect editor approval and verify publish status.",file:"content-approval.json",tag:"Content"},
+  {title:"Support triage",description:"Validate ticket metadata, identify urgent cases, route safely and verify ownership.",file:"support-triage.json",tag:"Support"}
+];
+---
+<BaseLayout title="Agency Workflow Templates | AI Workflow Toolkit" description="Free agency workflow blueprint templates for client onboarding, lead follow-up, reporting, content approvals and support triage.">
+  <div class="wrap"><div class="page-hero"><span class="eyebrow">Agency starter collection · Free preview</span><h1>Five repeatable workflows. <span class="gradient">One safer starting point.</span></h1><p>Download blueprint JSON files, review the safeguards and adapt them to your tools. These are workflow specifications, not preconfigured n8n integrations.</p></div><div class="cards" style="padding-bottom:80px">{packs.map((pack)=><article class="card"><span class="eyebrow">{pack.tag}</span><h3>{pack.title}</h3><p>{pack.description}</p><a class="text-link" href={"/templates/agency/"+pack.file} download>Download blueprint JSON →</a></article>)}</div></div>
+</BaseLayout>
