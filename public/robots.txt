@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://ai-workflow-toolkit.pages.dev/sitemap-index.xml
