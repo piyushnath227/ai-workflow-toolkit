@@ -21,7 +21,7 @@ Do not paste API keys into source files, frontend code, GitHub issues, or chat. 
 - By default, the endpoint selects Gemini when `GEMINI_API_KEY` exists; otherwise it selects Grok if `GROK_API_KEY` exists.
 - Set `AI_PROVIDER=gemini` or `AI_PROVIDER=grok` to choose one provider for all requests.
 - Set `AI_PROVIDER=auto` to explicitly enable failover: try Gemini first when configured, then Grok. **This can incur Grok API charges if Gemini fails.** Do not enable auto failover unless you accept that possibility.
-- A request may also send `provider: "gemini"`, `provider: "grok"`, or `provider: "auto"` in the JSON body to override the default. Only configured providers can be called. Keep the D1 daily quota in place; the current anonymous limit is three generation requests per IP per UTC day.
+- A request may also send `provider: "gemini"`, `provider: "grok"`, or `provider: "auto"` in the JSON body to override the default. Only configured providers can be called. Keep the D1 daily quota in place; the current anonymous limit is three generation requests per IP per UTC day. As an additional spend guard, actual Grok API calls are globally capped at five per UTC day across all visitors, including repair attempts. This cap is enforced in D1 and can be increased in code only after monitoring real usage.
 - Grok API access is separate from the Grok chat website and may be paid. Verify your xAI account's current pricing and limits before adding `GROK_API_KEY`.
 
 If any AI key is configured, D1 must be bound under the exact variable name `DB`; the API refuses to call AI providers without D1 usage tracking. Keep `TURNSTILE_SECRET_KEY` unset unless the client sends a valid Turnstile token.
