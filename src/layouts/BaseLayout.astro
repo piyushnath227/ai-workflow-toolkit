@@ -1,6 +1,6 @@
 ---
 import "../styles/global.css";
-const { title = "AI Workflow Toolkit | Workflows that run smoother", description = "Free workflow tools and practical automation guides for consultants and small agencies.", canonical = "https://ai-workflow-toolkit.pages.dev" } = Astro.props;
+const { title = "AI Workflow Toolkit | Reliable workflows for agencies", description = "Design safer business automations with structured workflow blueprints, safeguards, test plans and n8n starter exports.", canonical = "https://ai-workflow-toolkit.pages.dev" } = Astro.props;
 ---
 <!doctype html>
 <html lang="en">
@@ -16,6 +16,9 @@ const { title = "AI Workflow Toolkit | Workflows that run smoother", description
     <meta property="og:description" content={description} />
     <meta property="og:url" content={canonical + Astro.url.pathname} />
     <meta property="og:site_name" content="AI Workflow Toolkit" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
     <title>{title}</title>
   </head>
   <body>
@@ -23,10 +26,11 @@ const { title = "AI Workflow Toolkit | Workflows that run smoother", description
       <div class="wrap nav">
         <a class="brand" href="/" aria-label="AI Workflow Toolkit home"><span class="brand-mark">A</span><span>AI Workflow Toolkit</span></a>
         <nav class="nav-links" aria-label="Main navigation">
-          <a href="/builder/">Workflow Builder</a>
-          <a href="/onboarding/" class="hide-small">Checklist</a>
+          <a href="/builder/">Builder</a>
+          <a href="/ai-builder/" class="hide-small">AI Generator</a>
+          <a href="/templates/" class="hide-small">Templates</a>
           <a href="/guides/" class="hide-small">Guides</a>
-          <a href="/toolkit/" class="hide-small">Toolkit</a>
+          <a href="/pricing/" class="hide-small">Pricing</a>
         </nav>
         <a class="nav-cta" href="/builder/">Build a workflow <span aria-hidden="true">↗</span></a>
       </div>
@@ -36,7 +40,7 @@ const { title = "AI Workflow Toolkit | Workflows that run smoother", description
       <div class="wrap footer-inner">
         <a class="brand" href="/"><span class="brand-mark">A</span><span>AI Workflow Toolkit</span></a>
         <span>Practical systems for better client work.</span>
-        <div class="footer-links"><a href="/builder/">Workflow Builder</a><a href="/guides/">Guides</a><a href="/toolkit/">Toolkit</a><a href="https://github.com/piyushnath227/ai-workflow-toolkit" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+        <div class="footer-links"><a href="/sample/">Sample</a><a href="/services/">Services</a><a href="/about/">About</a><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="/refunds/">Refunds</a><a href="https://github.com/piyushnath227/ai-workflow-toolkit" target="_blank" rel="noreferrer">GitHub ↗</a></div>
       </div>
     </footer>
   </body>
