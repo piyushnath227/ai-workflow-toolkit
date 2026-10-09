@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Lead follow-up automation: a safer starter workflow | AI Workflow Toolkit" description="Design lead routing that checks data and consent before sending outreach.">
+  <div class="wrap"><article class="article page-hero"><span class="eyebrow">Sales automation · Practical guide</span><h1>Lead follow-up automation: a safer starter workflow.</h1><p>Design lead routing that checks data and consent before sending outreach.</p><div class="article-callout">Principle: document the expected outcome, the failure path and the proof of completion before connecting live systems.</div>
+<h2>Capture the source</h2><p>Record the form submission ID, timestamp, campaign source and consent status. Treat the source record as the system of record.</p>
+<h2>Deduplicate and validate</h2><p>Check the stable submission ID and normalized contact address before creating a lead. Do not treat a missing consent value as permission to contact someone.</p>
+<h2>Assign ownership</h2><p>Use a documented routing rule such as territory, service type or round robin. Record an accountable owner and a due date.</p>
+<h2>Approve outreach</h2><p>Use an approved message template and require human review during early rollout. Make unsubscribe and contact preferences part of the system design.</p>
+<h2>Measure follow-up</h2><p>Track time to first response, records missing an owner, duplicate submissions and failed delivery. Test provider outages and retries before enabling live sending.</p>
+<h2>Use the toolkit</h2><p>Turn this advice into a structured workflow, then test it with synthetic data before production.</p><p class="article-cta"><a class="btn btn-primary" href="/builder/">Build a workflow ↗</a> <a class="btn btn-secondary" href="/templates/">Browse agency templates</a></p></article></div>
+</BaseLayout>
