@@ -1,0 +1,103 @@
+{
+  "version": "1.0",
+  "title": "Agency lead follow-up",
+  "goal": "Capture and route inbound leads while preventing duplicate outreach.",
+  "trigger": {
+    "type": "webhook",
+    "description": "A lead form is submitted."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "action",
+      "name": "Validate lead and consent",
+      "tool": "form_or_crm",
+      "inputs": [
+        "email",
+        "source",
+        "consent"
+      ],
+      "on_error": "stop_and_alert",
+      "next": "s2"
+    },
+    {
+      "id": "s2",
+      "kind": "decision",
+      "name": "Check duplicate lead",
+      "branches": [
+        {
+          "label": "yes",
+          "next": "s5"
+        },
+        {
+          "label": "no",
+          "next": "s3"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "kind": "action",
+      "name": "Assign lead owner",
+      "tool": "crm",
+      "inputs": [
+        "routing rule",
+        "lead record"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s4"
+    },
+    {
+      "id": "s4",
+      "kind": "approval",
+      "name": "Approve first outreach",
+      "approver": "sales owner",
+      "next": "s5"
+    },
+    {
+      "id": "s5",
+      "kind": "action",
+      "name": "Send permitted acknowledgement",
+      "tool": "email",
+      "inputs": [
+        "approved copy",
+        "consented contact"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s6"
+    },
+    {
+      "id": "s6",
+      "kind": "verify",
+      "name": "Verify CRM task and activity",
+      "tool": "crm"
+    }
+  ],
+  "safeguards": {
+    "idempotency_key": "lead_form_submission_id",
+    "max_retries": 2,
+    "alert_channel": "sales operations"
+  },
+  "test_cases": [
+    {
+      "name": "Happy path",
+      "input": "valid lead with consent",
+      "expect": "owner and follow-up task created"
+    },
+    {
+      "name": "Duplicate event",
+      "input": "same submission ID twice",
+      "expect": "no duplicate outreach"
+    },
+    {
+      "name": "Bad input",
+      "input": "no consent or email",
+      "expect": "no message is sent"
+    },
+    {
+      "name": "Provider failure",
+      "input": "CRM API timeout",
+      "expect": "bounded retry and alert"
+    }
+  ]
+}
