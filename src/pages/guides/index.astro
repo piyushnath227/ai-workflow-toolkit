@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+const guides = [
+  {tag:"Client operations · 6 min",title:"How to build a client onboarding process that scales",description:"Create a repeatable welcome, access, kickoff and approval process without making every project feel rigid.",href:"/guides/client-onboarding-process/"},
+  {tag:"Automation basics · 7 min",title:"Find your first workflow to automate",description:"A practical way to spot repetitive work, estimate its value and avoid automating a broken process.",href:"/guides/first-workflow-to-automate/"},
+  {tag:"AI workflows · 8 min",title:"A safer way to add AI to business workflows",description:"Use AI for bounded tasks while keeping permissions, verification and human approval where they matter.",href:"/guides/safer-ai-workflows/"}
+];
+---
+<BaseLayout title="Automation Guides for Small Teams | AI Workflow Toolkit" description="Practical workflow and automation guides for consultants and small agencies.">
+  <div class="wrap"><div class="page-hero"><span class="eyebrow">The field guide</span><h1>Better systems, <span class="gradient">one practical step at a time.</span></h1><p>Useful, approachable playbooks for making client delivery more consistent. Start simple, measure what changes, then improve.</p></div>
+  <div class="guide-grid">{guides.map((guide)=><a class="guide-card" href={guide.href}><span class="tag">{guide.tag}</span><h2>{guide.title}</h2><p>{guide.description}</p><span class="text-link">Read guide →</span></a>)}</div></div>
+</BaseLayout>
