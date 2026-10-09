@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="n8n error handling: retries, alerts and recovery | AI Workflow Toolkit" description="Plan recoverable failures instead of letting automation silently stop.">
+  <div class="wrap"><article class="article page-hero"><span class="eyebrow">Reliability · Practical guide</span><h1>n8n error handling: retries, alerts and recovery.</h1><p>Plan recoverable failures instead of letting automation silently stop.</p><div class="article-callout">Principle: document the expected outcome, the failure path and the proof of completion before connecting live systems.</div>
+<h2>Classify failures</h2><p>Separate temporary errors such as rate limits from permanent errors such as invalid input or revoked permissions.</p>
+<h2>Use bounded retries</h2><p>Set a small retry limit, use delays for transient failures and alert a named owner after the limit. Never retry a financial side effect blindly.</p>
+<h2>Create an exception path</h2><p>Record the run ID, failed step, sanitized error and source record. Avoid putting credentials or sensitive payloads in chat alerts.</p>
+<h2>Verify recovery</h2><p>After retry or manual repair, verify the target state and mark the run recovered only when the expected result is present.</p>
+<h2>Exercise the failure path</h2><p>Test provider timeout, authorization failure, malformed response and exhausted retries in a test workspace.</p>
+<h2>Use the toolkit</h2><p>Turn this advice into a structured workflow, then test it with synthetic data before production.</p><p class="article-cta"><a class="btn btn-primary" href="/builder/">Build a workflow ↗</a> <a class="btn btn-secondary" href="/templates/">Browse agency templates</a></p></article></div>
+</BaseLayout>
