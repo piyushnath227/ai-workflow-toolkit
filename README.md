@@ -1,54 +1,47 @@
 # AI Workflow Toolkit
 
-A free, browser-first workflow blueprint builder for solo consultants and small agencies. Describe a business process and get a structured workflow plan, visual map, tool-mapping suggestions, failure-handling rules, test checklist, and downloadable JSON or Markdown.
+A browser-first workflow design toolkit for small agencies and solo operators. The product focuses on documented workflows, human approval, duplicate-event safeguards, failure handling and test cases.
 
 **Live site:** https://ai-workflow-toolkit.pages.dev  
-**Workflow Builder:** https://ai-workflow-toolkit.pages.dev/builder/
+**Workflow Builder:** https://ai-workflow-toolkit.pages.dev/builder/  
+**AI Generator:** https://ai-workflow-toolkit.pages.dev/ai-builder/  
+**Templates:** https://ai-workflow-toolkit.pages.dev/templates/
 
-## Features
+## What's included
+- Existing local, rule-based workflow builder and editable ready-to-use message.
+- Blueprint contract, validation and deterministic Markdown/n8n scaffold exporter.
+- Five agency workflow blueprint templates: client onboarding, lead follow-up, weekly client reporting, content approval and support triage.
+- AI generation endpoint using Gemini when configured, with schema validation and deterministic fallback.
+- n8n export API, D1 migrations, lead capture endpoint and workflow audit request endpoint.
+- Sample output, templates, pricing, services, about and draft legal pages.
+- Automated Node.js tests and CI build.
 
-- Template-powered workflow builder for client onboarding, lead follow-up, content production, customer support triage, weekly reporting, and general processes.
-- Visual step map with triggers, actions, decisions, human approval points, and final verification.
-- Build plan with suggested tool mappings, decision rules, failure modes, implementation sequence, and monitoring ideas.
-- Test checklist for happy paths, missing data, duplicate triggers, integration failures, approval gates, verification mismatches, and privacy/access.
-- Export as JSON for structured use or Markdown for sharing with a teammate or developer.
-- Existing client onboarding checklist generator and practical guides.
-- Responsive dark interface; no account, server-side data storage, or paid API key required.
+## Important limitations
+The AI generator is **not live until** `GEMINI_API_KEY` is configured in Cloudflare Pages Functions. The optional Turnstile and D1 bindings are also required if you enable those protections and database-backed endpoints. No checkout, paid subscription, magic-link login, or saved-workflow API is active. The D1 schema is groundwork, not a complete account system.
 
-## Important scope note
+The n8n exporter creates an **inactive scaffold**, not a production-ready integration. It uses placeholder actions and placeholder validation conditions. Import the output into a current n8n instance, wire decision branches and human approval behavior, add persistent idempotency storage, configure credentials and test all failure cases in a sandbox before using it in production or selling it as tested.
 
-The builder is deterministic and template-powered. It does **not** call a live AI model, connect to external apps, or execute workflows. Outputs are implementation blueprints, not proof that an integration has been deployed or tested. Review tool capabilities, permissions, security, and pricing before implementing any workflow in production.
-
-## Run locally
-
+## Local development
 Requires Node.js 20 or newer.
 
 ```bash
 npm install
+npm test
+npm run build
 npm run dev
 ```
 
-Build the static site:
-
-```bash
-npm run build
-npm run preview
-```
-
-The production build is generated in `dist/`. The project is built with Astro and can be deployed to Cloudflare Pages using:
-
+## Cloudflare Pages
 - Production branch: `main`
 - Build command: `npm run build`
 - Build output directory: `dist`
-- Root directory: leave empty
-- Environment variables: none required
-
-A GitHub Actions workflow in `.github/workflows/build.yml` runs the Astro build on pushes and pull requests to `main`.
+- Root directory: repository root
+- Apply `migrations/0001_initial.sql` to a Cloudflare D1 database and bind it as `DB` only when enabling API storage.
+- Optional secrets: `GEMINI_API_KEY`, `TURNSTILE_SECRET_KEY`. Do not commit secrets.
+- Full setup and limitations: `docs/production-readiness.md`.
 
 ## Privacy
-
-Workflow input and generated content are processed in the browser. The site does not submit workflow descriptions to an AI provider or application server.
+The original browser builder processes workflow descriptions locally. The AI Generator sends the description to the server and, when configured, to the selected AI provider. Do not submit secrets or sensitive customer data. Review the draft Privacy page and update it with actual providers and contact information before launch.
 
 ## License
-
 MIT
