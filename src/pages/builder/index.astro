@@ -22,15 +22,29 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         <p class="muted output-summary" id="output-summary">Your workflow map, implementation plan and testing checklist will appear here.</p>
         <div class="output-placeholder" id="placeholder"><div class="placeholder-symbol">⌘</div><strong>A process you can actually build.</strong><span>Start with a real task on the left. We'll turn it into a structured, editable plan.</span></div>
         <div id="generated" hidden>
-          <div class="tab-bar" role="tablist" aria-label="Workflow output">
-            <button class="tab active" type="button" data-tab="map" role="tab" aria-selected="true">Workflow map</button>
-            <button class="tab" type="button" data-tab="plan" role="tab" aria-selected="false">Build plan</button>
-            <button class="tab" type="button" data-tab="tests" role="tab" aria-selected="false">Test checklist</button>
+          <div class="deliverable-switch" role="tablist" aria-label="Generated deliverables">
+            <button class="deliverable-tab active" type="button" data-deliverable="message" role="tab" aria-selected="true"><span>01</span><strong>Ready-to-use message</strong><small>Copy, edit or download</small></button>
+            <button class="deliverable-tab" type="button" data-deliverable="blueprint" role="tab" aria-selected="false"><span>02</span><strong>Technical blueprint</strong><small>Map, implementation & tests</small></button>
           </div>
-          <div id="map-view" class="tab-view"></div>
-          <div id="plan-view" class="tab-view" hidden></div>
-          <div id="tests-view" class="tab-view" hidden></div>
-          <div class="export-bar"><div><strong>Take it with you</strong><small>Download the blueprint or copy a build-ready brief.</small></div><div class="export-actions"><button type="button" class="btn btn-secondary" id="copy-plan">Copy plan</button><button type="button" class="btn btn-primary" id="download-json">Download JSON ↗</button><button type="button" class="btn btn-secondary" id="download-md">Download .md</button></div></div>
+          <section id="message-deliverable" class="deliverable-view" aria-label="Ready-to-use message">
+            <div class="deliverable-intro"><span class="eyebrow">DELIVERABLE 01</span><h3>Ready to send</h3><p>This is the actual message your team can use. Edit it here before copying or downloading.</p></div>
+            <div class="message-meta"><span class="pill" id="message-channel-label">SLACK / TEAMS</span><span class="message-status"><i></i> Editable draft</span></div>
+            <label class="field message-field"><span>Message content</span><textarea id="ready-message" rows="13" spellcheck="true"></textarea></label>
+            <div class="message-actions"><button type="button" class="btn btn-primary" id="copy-message">Copy message ↗</button><button type="button" class="btn btn-secondary" id="download-message">Download message .txt</button></div>
+            <p class="notice">The message is a draft. Posting it, collecting replies and compiling a report require a separately configured Slack or Teams integration.</p>
+          </section>
+          <section id="blueprint-deliverable" class="deliverable-view" aria-label="Technical automation blueprint" hidden>
+            <div class="deliverable-intro"><span class="eyebrow">DELIVERABLE 02</span><h3>Technical automation blueprint</h3><p>Everything needed to implement and test the process in your approved tools.</p></div>
+            <div class="tab-bar" role="tablist" aria-label="Technical blueprint sections">
+              <button class="tab active" type="button" data-tab="map" role="tab" aria-selected="true">Workflow map</button>
+              <button class="tab" type="button" data-tab="plan" role="tab" aria-selected="false">Implementation plan</button>
+              <button class="tab" type="button" data-tab="tests" role="tab" aria-selected="false">Test checklist</button>
+            </div>
+            <div id="map-view" class="tab-view"></div>
+            <div id="plan-view" class="tab-view" hidden></div>
+            <div id="tests-view" class="tab-view" hidden></div>
+            <div class="export-bar"><div><strong>Export both deliverables</strong><small>Downloads include the editable message and technical blueprint.</small></div><div class="export-actions"><button type="button" class="btn btn-secondary" id="copy-plan">Copy blueprint</button><button type="button" class="btn btn-primary" id="download-json">Download JSON ↗</button><button type="button" class="btn btn-secondary" id="download-md">Download .md</button></div></div>
+          </section>
           <p class="success" id="feedback" role="status"></p>
         </div>
       </section>
@@ -135,6 +149,17 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
     };
     const typeNames = { Input: "Trigger / input", Decision: "Decision", Action: "Action", Approval: "Human approval", Recovery: "Recovery", Verify: "Verification" };
     const safe = (value) => String(value).replace(/[&<>"']/g, char => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[char]));
+    function createReadyMessage(goal, type) {
+      const lower = goal.toLowerCase();
+      if (type === "reporting" || /weekly update|team update|weekly report|weekly check.?in|collect weekly/i.test(lower)) {
+        return "Hey team! 👋\n\nHappy Friday! Please share your weekly update by 4:00 PM today by replying directly in this thread.\n\n- ✅ Done: What did you ship or finish this week?\n- 🎯 Doing: What is your primary focus for next week?\n- 🚧 Blocked: Is anything stopping you from moving forward?\n\nKeep it brief and let us know if you need any support. Thanks for all your hard work!\n\n📊 Weekly report: [AUTO-COMPILED BY EOD]";
+      }
+      if (type === "client") return "Hi team 👋\n\nA new client onboarding workflow has started. Please review the client details, confirm the required information is complete, and update the project workspace with the owner and next steps.\n\n- ✅ Done: Confirm the intake details and workspace.\n- 🎯 Next: Complete the assigned onboarding tasks.\n- 🚧 Blocked: Flag missing access, assets, or approvals in this thread.\n\n📌 Status: [UPDATE STATUS] · Owner: [OWNER]";
+      if (type === "leads") return "👋 New lead follow-up\n\nA new lead needs review. Please confirm the record is complete, check contact permission, and make sure an owner and follow-up date are assigned.\n\n- ✅ Done: [LEAD / COMPANY] captured and checked\n- 🎯 Next: [OWNER] to follow up by [DUE DATE]\n- 🚧 Blocked: [MISSING DETAILS / NONE]\n\n📌 Lead record: [LINK]";
+      if (type === "content") return "📝 Content review requested\n\nA draft is ready for review. Please check factual accuracy, brand voice, links, and any required permissions before publication.\n\n- ✅ Done: [DRAFT / LINK]\n- 🎯 Next: Please review by [DEADLINE]\n- 🚧 Blocked: Add any requested changes or missing sources in this thread.\n\n📌 Status: [AWAITING APPROVAL]";
+      if (type === "support") return "🛟 Support ticket needs triage\n\nPlease review the new ticket, confirm its urgency, and assign an accountable owner. Avoid sharing unnecessary customer information in this channel.\n\n- ✅ Done: [TICKET ID / LINK]\n- 🎯 Next: [OWNER] to investigate by [DUE TIME]\n- 🚧 Blocked: [DEPENDENCY / CUSTOMER INFO NEEDED]\n\n📌 Escalate security, payment, or safety-sensitive issues to the appropriate human owner.";
+      return "Hey team 👋\n\nPlease review this workflow request and share an update in this thread.\n\n- ✅ Done: [WHAT IS COMPLETE]\n- 🎯 Doing: [NEXT ACTION AND OWNER]\n- 🚧 Blocked: [DEPENDENCIES OR NONE]\n\n📌 Process: " + goal + "\n📅 Deadline: [DUE DATE / TIME]";
+    }
     function createBlueprint() {
       const goal = document.querySelector("#goal").value.trim();
       const type = document.querySelector("#workflow-type").value;
@@ -158,6 +183,8 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         generatedAt: new Date().toISOString(),
         title: template.name,
         userGoal: goal,
+        readyMessage: createReadyMessage(goal, type),
+        messageChannel: stack === "microsoft" ? "Microsoft Teams" : "Slack / Teams",
         goalSpecificRecommendations: goalSignals,
         workflowType: type,
         trigger: template.trigger,
@@ -189,6 +216,10 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         limitations: "This is a generated design blueprint, not an executable integration. Verify app capabilities, API behavior, security requirements and current pricing before implementation."
       };
     }
+    function renderMessage(bp) {
+      document.querySelector("#ready-message").value = bp.readyMessage;
+      document.querySelector("#message-channel-label").textContent = bp.messageChannel.toUpperCase();
+    }
     function renderMap(bp) {
       const container = document.querySelector("#map-view");
       container.innerHTML = '<div class="workflow-map"><div class="map-start"><span class="node-kicker">TRIGGER</span><strong>' + safe(bp.trigger) + '</strong></div>' +
@@ -212,7 +243,7 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
         bp.tests.map((test,i) => '<label class="test-row"><input type="checkbox"><span><strong>' + safe(test[0]) + '</strong><small>' + safe(test[1]) + '</small></span></label>').join("") + '</div>';
     }
     function toMarkdown(bp) {
-      return '# ' + bp.title + ' workflow blueprint\n\n> Generated locally by AI Workflow Toolkit. This is a plan, not an executing integration.\n\n## Goal\n' + bp.userGoal + '\n\n## Trigger\n' + bp.trigger + '\n\n## Suggested tools\n' + bp.suggestedToolMapping + '\n\n## Workflow steps\n' + bp.steps.map(s => (s.id + '. **' + s.title + '** (' + s.type + ')\n   - ' + s.description + '\n   - Owner: ' + s.owner)).join('\n') + '\n\n## Decision and recovery rules\n' + bp.decisionRules.map(x => '- ' + x).join('\n') + '\n\n## Recommendations based on your description\n' + bp.goalSpecificRecommendations.map(x => '- ' + x).join('\n') + '\n\n## Failure modes to plan for\n' + bp.failureHandling.map(x => '- ' + x).join('\n') + '\n\n## Implementation plan\n' + bp.implementationPlan.map((x,i) => (i+1) + '. ' + x).join('\n') + '\n\n## Test checklist\n' + bp.tests.map(t => '- [ ] **' + t[0] + ':** ' + t[1]).join('\n') + '\n\n## Monitoring\n' + bp.monitoring.map(x => '- ' + x).join('\n') + '\n\n## Approval policy\n' + bp.approvalPolicy + '\n\n## Limitations\n' + bp.limitations + '\n';
+      return '# ' + bp.title + ' workflow deliverables\n\n> Generated locally by AI Workflow Toolkit. The message is an editable draft; the technical blueprint is a plan, not an executing integration.\n\n## Deliverable 1: Ready-to-use message\n\n' + (document.querySelector("#ready-message").value || bp.readyMessage) + '\n\n---\n\n## Deliverable 2: Technical automation blueprint\n\n## Goal\n' + bp.userGoal + '\n\n## Trigger\n' + bp.trigger + '\n\n## Suggested tools\n' + bp.suggestedToolMapping + '\n\n## Workflow steps\n' + bp.steps.map(s => (s.id + '. **' + s.title + '** (' + s.type + ')\n   - ' + s.description + '\n   - Owner: ' + s.owner)).join('\n') + '\n\n## Decision and recovery rules\n' + bp.decisionRules.map(x => '- ' + x).join('\n') + '\n\n## Recommendations based on your description\n' + bp.goalSpecificRecommendations.map(x => '- ' + x).join('\n') + '\n\n## Failure modes to plan for\n' + bp.failureHandling.map(x => '- ' + x).join('\n') + '\n\n## Implementation plan\n' + bp.implementationPlan.map((x,i) => (i+1) + '. ' + x).join('\n') + '\n\n## Test checklist\n' + bp.tests.map(t => '- [ ] **' + t[0] + ':** ' + t[1]).join('\n') + '\n\n## Monitoring\n' + bp.monitoring.map(x => '- ' + x).join('\n') + '\n\n## Approval policy\n' + bp.approvalPolicy + '\n\n## Limitations\n' + bp.limitations + '\n';
     }
     function downloadFile(filename, content, type) {
       const blob = new Blob([content], {type});
@@ -228,20 +259,33 @@ import BaseLayout from "../../layouts/BaseLayout.astro";
       document.querySelector("#output-count").textContent = blueprint.steps.length + " steps · " + blueprint.tests.length + " tests";
       document.querySelector("#output-summary").textContent = "A practical first draft based on your goal, tool preference and chosen approval level.";
       placeholder.hidden = true; generated.hidden = false;
-      renderMap(blueprint); renderPlan(blueprint); renderTests(blueprint);
+      renderMessage(blueprint); renderMap(blueprint); renderPlan(blueprint); renderTests(blueprint);
+      document.querySelectorAll(".deliverable-tab").forEach(tab => {tab.classList.toggle("active", tab.dataset.deliverable === "message"); tab.setAttribute("aria-selected", String(tab.dataset.deliverable === "message"));});
+      document.querySelector("#message-deliverable").hidden = false;
+      document.querySelector("#blueprint-deliverable").hidden = true;
       document.querySelectorAll(".tab").forEach(tab => {tab.classList.toggle("active", tab.dataset.tab === "map"); tab.setAttribute("aria-selected", String(tab.dataset.tab === "map"));});
       document.querySelectorAll(".tab-view").forEach(view => view.hidden = view.id !== "map-view");
       feedback.textContent = "";
     });
+    document.querySelectorAll(".deliverable-tab").forEach(tab => tab.addEventListener("click", () => {
+      document.querySelectorAll(".deliverable-tab").forEach(t => {t.classList.toggle("active", t === tab); t.setAttribute("aria-selected", String(t === tab));});
+      document.querySelector("#message-deliverable").hidden = tab.dataset.deliverable !== "message";
+      document.querySelector("#blueprint-deliverable").hidden = tab.dataset.deliverable !== "blueprint";
+    }));
     document.querySelectorAll(".tab").forEach(tab => tab.addEventListener("click", () => {
       document.querySelectorAll(".tab").forEach(t => {t.classList.toggle("active", t === tab); t.setAttribute("aria-selected", String(t === tab));});
       document.querySelectorAll(".tab-view").forEach(view => view.hidden = view.id !== tab.dataset.tab + "-view");
     }));
+    document.querySelector("#copy-message").addEventListener("click", async () => {
+      try { await navigator.clipboard.writeText(document.querySelector("#ready-message").value); feedback.textContent = "Ready-to-use message copied."; }
+      catch { feedback.textContent = "Clipboard access was blocked. Use Download message .txt instead."; }
+    });
+    document.querySelector("#download-message").addEventListener("click", () => {downloadFile("ready-to-use-message.txt", document.querySelector("#ready-message").value, "text/plain;charset=utf-8"); feedback.textContent = "Ready-to-use message downloaded.";});
     document.querySelector("#copy-plan").addEventListener("click", async () => {
       try { await navigator.clipboard.writeText(toMarkdown(blueprint)); feedback.textContent = "Build plan copied to clipboard."; }
       catch { feedback.textContent = "Clipboard access was blocked. Use Download .md instead."; }
     });
-    document.querySelector("#download-json").addEventListener("click", () => {downloadFile("workflow-blueprint.json", JSON.stringify(blueprint, null, 2), "application/json;charset=utf-8"); feedback.textContent = "JSON blueprint downloaded.";});
+    document.querySelector("#download-json").addEventListener("click", () => {downloadFile("workflow-blueprint.json", JSON.stringify({...blueprint, readyMessage: document.querySelector("#ready-message").value, deliverables: {readyToUseMessage: document.querySelector("#ready-message").value, technicalBlueprint: {...blueprint, readyMessage: undefined}}}, null, 2), "application/json;charset=utf-8"); feedback.textContent = "JSON blueprint downloaded.";});
     document.querySelector("#download-md").addEventListener("click", () => {downloadFile("workflow-blueprint.md", toMarkdown(blueprint), "text/markdown;charset=utf-8"); feedback.textContent = "Markdown build plan downloaded.";});
   </script>
 </BaseLayout>
