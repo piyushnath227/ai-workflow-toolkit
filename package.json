@@ -1,19 +1,8 @@
 {
   "name": "ai-workflow-toolkit",
   "type": "module",
-  "version": "1.0.0",
-  "scripts": {
-    "dev": "astro dev",
-    "build": "astro build",
-    "preview": "astro preview",
-    "check": "astro check"
-  },
-  "dependencies": {
-    "@astrojs/sitemap": "^3.6.0",
-    "astro": "^5.14.1"
-  },
-  "devDependencies": {
-    "@astrojs/check": "^0.9.4",
-    "typescript": "^5.9.2"
-  }
+  "version": "1.1.0",
+  "scripts": {"dev":"astro dev","build":"astro build","preview":"astro preview","check":"astro check","test":"node --test"},
+  "dependencies": {"@astrojs/sitemap":"^3.6.0","astro":"^5.14.1"},
+  "devDependencies": {"@astrojs/check":"^0.9.4","typescript":"^5.9.2"}
 }
