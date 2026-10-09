@@ -37,3 +37,5 @@ CREATE TABLE IF NOT EXISTS leads (
   source TEXT,
   created_at INTEGER NOT NULL
 );
+
+CREATE TABLE IF NOT EXISTS service_requests (id TEXT PRIMARY KEY, email TEXT NOT NULL, role TEXT, process_description TEXT NOT NULL, created_at INTEGER NOT NULL);
