@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Prevent duplicate runs with idempotency keys | AI Workflow Toolkit" description="Learn how stable event IDs stop repeated webhooks from creating duplicate side effects.">
+  <div class="wrap"><article class="article page-hero"><span class="eyebrow">Reliability · Practical guide</span><h1>Prevent duplicate runs with idempotency keys.</h1><p>Learn how stable event IDs stop repeated webhooks from creating duplicate side effects.</p><div class="article-callout">Principle: document the expected outcome, the failure path and the proof of completion before connecting live systems.</div>
+<h2>Choose a stable key</h2><p>Use a source event ID, form submission ID or a combination such as client ID plus reporting period. Avoid timestamps generated anew for each retry.</p>
+<h2>Persist the key</h2><p>Store processed keys in a durable data store with a unique constraint. An in-memory variable is not sufficient across restarts or multiple workers.</p>
+<h2>Make side effects safe</h2><p>Check the key before sending a message or creating a record, and persist completion status so concurrent deliveries cannot both proceed.</p>
+<h2>Handle partial failures</h2><p>Store a run state such as started, completed or needs-review. Decide how a manual operator safely resumes an incomplete run.</p>
+<h2>Test replays</h2><p>Send the same test event twice and concurrently. Verify one intended side effect, a visible duplicate outcome and no silent data loss.</p>
+<h2>Use the toolkit</h2><p>Turn this advice into a structured workflow, then test it with synthetic data before production.</p><p class="article-cta"><a class="btn btn-primary" href="/builder/">Build a workflow ↗</a> <a class="btn btn-secondary" href="/templates/">Browse agency templates</a></p></article></div>
+</BaseLayout>
