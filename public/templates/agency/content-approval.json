@@ -1,0 +1,101 @@
+{
+  "version": "1.0",
+  "title": "Agency content approval",
+  "goal": "Move a content request through brief validation, drafting, human review and approved publishing.",
+  "trigger": {
+    "type": "webhook",
+    "description": "A new content request is created."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "action",
+      "name": "Validate content brief",
+      "tool": "project_tool",
+      "inputs": [
+        "audience",
+        "goal",
+        "deadline",
+        "sources"
+      ],
+      "on_error": "stop_and_alert",
+      "next": "s2"
+    },
+    {
+      "id": "s2",
+      "kind": "decision",
+      "name": "Check brief completeness",
+      "branches": [
+        {
+          "label": "complete",
+          "next": "s3"
+        },
+        {
+          "label": "incomplete",
+          "next": "s5"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "kind": "action",
+      "name": "Create draft task",
+      "tool": "content_tool",
+      "inputs": [
+        "brief",
+        "owner",
+        "deadline"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s4"
+    },
+    {
+      "id": "s4",
+      "kind": "approval",
+      "name": "Approve draft for publishing",
+      "approver": "editor_or_client",
+      "next": "s6"
+    },
+    {
+      "id": "s5",
+      "kind": "recovery",
+      "name": "Request missing brief fields",
+      "tool": "project_tool",
+      "on_error": "stop_and_alert",
+      "next": "s6"
+    },
+    {
+      "id": "s6",
+      "kind": "verify",
+      "name": "Verify approval and publish status",
+      "tool": "content_platform"
+    }
+  ],
+  "safeguards": {
+    "idempotency_key": "content_request_id",
+    "max_retries": 2,
+    "alert_channel": "content-operations"
+  },
+  "test_cases": [
+    {
+      "name": "Happy path",
+      "input": "complete approved content brief",
+      "expect": "draft reviewed before publishing"
+    },
+    {
+      "name": "Duplicate event",
+      "input": "same request replayed",
+      "expect": "no duplicate draft task"
+    },
+    {
+      "name": "Bad input",
+      "input": "missing deadline",
+      "expect": "requester is asked to complete brief"
+    },
+    {
+      "name": "Provider failure",
+      "input": "content platform outage",
+      "expect": "publish state remains unconfirmed"
+    }
+  ]
+}
