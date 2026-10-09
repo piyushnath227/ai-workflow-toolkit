@@ -1,0 +1,39 @@
+---
+import "../styles/global.css";
+const { title = "AI Workflow Toolkit | Workflows that run smoother", description = "Free workflow tools and practical automation guides for consultants and small agencies.", canonical = "https://ai-workflow-toolkit.pages.dev" } = Astro.props;
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#0a0d14" />
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical + Astro.url.pathname} />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header class="site-header">
+      <div class="wrap nav">
+        <a class="brand" href="/" aria-label="AI Workflow Toolkit home"><span class="brand-mark">A</span><span>AI Workflow Toolkit</span></a>
+        <nav class="nav-links" aria-label="Main navigation">
+          <a href="/onboarding/">Free tool</a>
+          <a href="/guides/" class="hide-small">Guides</a>
+          <a href="/toolkit/" class="hide-small">Toolkit</a>
+        </nav>
+        <a class="nav-cta" href="/onboarding/">Build a workflow <span aria-hidden="true">↗</span></a>
+      </div>
+    </header>
+    <main><slot /></main>
+    <footer class="site-footer">
+      <div class="wrap footer-inner">
+        <a class="brand" href="/"><span class="brand-mark">A</span><span>AI Workflow Toolkit</span></a>
+        <span>Practical systems for better client work.</span>
+        <div class="footer-links"><a href="/guides/">Guides</a><a href="/toolkit/">Toolkit</a><a href="https://github.com/piyushnath227/ai-workflow-toolkit" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+      </div>
+    </footer>
+  </body>
+</html>
