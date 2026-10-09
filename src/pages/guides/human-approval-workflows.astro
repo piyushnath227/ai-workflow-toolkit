@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="When an automation should ask a human for approval | AI Workflow Toolkit" description="Use explicit approval gates for external messages, publishing and irreversible changes.">
+  <div class="wrap"><article class="article page-hero"><span class="eyebrow">Governance · Practical guide</span><h1>When an automation should ask a human for approval.</h1><p>Use explicit approval gates for external messages, publishing and irreversible changes.</p><div class="article-callout">Principle: document the expected outcome, the failure path and the proof of completion before connecting live systems.</div>
+<h2>Identify risky actions</h2><p>Flag actions that contact customers, publish public content, alter sensitive records or move money. Choose approval rules based on impact, not novelty.</p>
+<h2>Show reviewers enough context</h2><p>Present the proposed action, source links, relevant fields and a clear approve/reject choice. Do not expose unnecessary personal data.</p>
+<h2>Make approval enforceable</h2><p>The workflow must pause before the protected action and resume only after a valid approval event. A note saying 'review this' is not a control.</p>
+<h2>Plan timeout and rejection</h2><p>Define who gets notified, what happens if the reviewer does not respond and how rejected work returns to an owner.</p>
+<h2>Audit decisions</h2><p>Record reviewer identity, decision, timestamp and workflow version. Test unauthorized approval, repeated approval events and expired requests.</p>
+<h2>Use the toolkit</h2><p>Turn this advice into a structured workflow, then test it with synthetic data before production.</p><p class="article-cta"><a class="btn btn-primary" href="/builder/">Build a workflow ↗</a> <a class="btn btn-secondary" href="/templates/">Browse agency templates</a></p></article></div>
+</BaseLayout>

@@ -1,0 +1,33 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+<BaseLayout title="AI Workflow Generator | AI Workflow Toolkit" description="Generate a structured workflow blueprint from a plain-English business process and export an n8n scaffold.">
+  <div class="wrap"><div class="page-hero"><span class="eyebrow">Workflow generator · Early access</span><h1>Describe it. <span class="gradient">Get a buildable blueprint.</span></h1><p>Generate a structured workflow, validate its safeguards and export an n8n scaffold. AI generation requires a server-side Gemini key; without it, the endpoint returns a clearly labelled rule-based fallback.</p></div>
+    <div class="tool-layout"><form class="panel" id="ai-form"><h2>Describe your workflow</h2><p class="muted">Be specific about the trigger, tools, desired outcome and risky actions.</p><label class="field"><span>Workflow description</span><textarea id="ai-goal" rows="7" maxlength="2000" required placeholder="When a new agency client signs a proposal, validate their details, create a project workspace, request human approval before sending the welcome email, and record the result."></textarea></label><button class="btn btn-primary" type="submit" id="generate-btn">Generate blueprint ↗</button><p class="notice">Do not include passwords, API keys, payment details or private customer data. If the AI endpoint is configured, your description is sent to the configured AI provider.</p><p id="ai-status" class="success" role="status"></p></form>
+    <section class="panel"><div class="result-top"><h2 id="result-title">Your blueprint</h2><span class="pill" id="mode">Waiting for input</span></div><p class="muted" id="result-summary">Your validated workflow will appear here.</p><pre id="result-json" style="white-space:pre-wrap;overflow-wrap:anywhere;color:#cbd6e8;font-size:12px;line-height:1.65;max-height:540px;overflow:auto"></pre><div class="actions"><button type="button" class="btn btn-secondary" id="download-blueprint" disabled>Download blueprint JSON</button><button type="button" class="btn btn-primary" id="download-n8n" disabled>Export n8n scaffold ↗</button></div><p class="notice">The n8n file is an importable starting scaffold, not a production-ready automation. Configure credentials, branch wiring, approval behavior and real integrations in n8n, then test in a sandbox.</p></section></div>
+  </div>
+  <script>
+    const form = document.querySelector("#ai-form");
+    const goal = document.querySelector("#ai-goal");
+    const status = document.querySelector("#ai-status");
+    const output = document.querySelector("#result-json");
+    const mode = document.querySelector("#mode");
+    const summary = document.querySelector("#result-summary");
+    const title = document.querySelector("#result-title");
+    const blueprintButton = document.querySelector("#download-blueprint");
+    const n8nButton = document.querySelector("#download-n8n");
+    let blueprint = null;
+    const save = (name, content, type) => { const url = URL.createObjectURL(new Blob([content], {type})); const a = document.createElement("a"); a.href = url; a.download = name; a.click(); URL.revokeObjectURL(url); };
+    form.addEventListener("submit", async event => {
+      event.preventDefault(); status.textContent = "Generating and validating…"; mode.textContent = "Working"; blueprintButton.disabled = true; n8nButton.disabled = true;
+      try {
+        const response = await fetch("/api/generate", {method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify({goal:goal.value})});
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Generation failed.");
+        blueprint = data.blueprint; output.textContent = JSON.stringify(blueprint, null, 2); title.textContent = blueprint.title || "Workflow blueprint"; mode.textContent = data.mode === "ai" ? "AI generated" : "Rule-based fallback"; summary.textContent = data.notice || "Blueprint returned by the server and validated."; status.textContent = data.notice || "Blueprint ready."; blueprintButton.disabled = false; n8nButton.disabled = false;
+      } catch (error) { status.textContent = error instanceof Error ? error.message : "Something went wrong. Please retry."; mode.textContent = "Unavailable"; }
+    });
+    blueprintButton.addEventListener("click", () => {if (blueprint) save("workflow-blueprint.json", JSON.stringify(blueprint,null,2), "application/json");});
+    n8nButton.addEventListener("click", async () => { if (!blueprint) return; n8nButton.disabled = true; status.textContent = "Preparing n8n scaffold…"; try { const r = await fetch("/api/export/n8n",{method:"POST",headers:{"content-type":"application/json"},body:JSON.stringify(blueprint)}); const data = await r.json(); if (!r.ok) throw new Error(data.error || "Export failed."); save("workflow-n8n-scaffold.json", JSON.stringify(data,null,2), "application/json"); status.textContent = "n8n scaffold downloaded. Import and configure it in a test instance."; } catch(e) {status.textContent = e instanceof Error ? e.message : "Export failed.";} finally {n8nButton.disabled = false;} });
+  </script>
+</BaseLayout>

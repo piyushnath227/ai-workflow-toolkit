@@ -4,10 +4,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 <BaseLayout>
   <div class="wrap hero hero-new">
     <div>
-      <span class="eyebrow">Your process, made buildable</span>
-      <h1>Turn busywork into <span class="gradient">workflows that work.</span></h1>
-      <p>Design a smarter business process in minutes. Get a visual workflow map, implementation steps, exception handling and a test checklist—without an AI subscription or API key.</p>
-      <div class="actions"><a class="btn btn-primary" href="/builder/">Build a workflow <span>↗</span></a><a class="btn btn-secondary" href="/guides/">Explore the guides</a></div>
+      <span class="eyebrow">Built for agencies and solo operators</span>
+      <h1>Design safer workflows <span class="gradient">before you automate.</span></h1>
+      <p>Turn client onboarding, lead follow-up and weekly reporting into documented automation blueprints—with approval gates, failure handling, verification and practical test cases.</p>
+      <div class="actions"><a class="btn btn-primary" href="/builder/">Build a free blueprint <span>↗</span></a><a class="btn btn-secondary" href="/sample/">See a real sample</a></div>
       <div class="micro"><span class="micro-dot"></span> Free to use · No sign-up · Runs in your browser</div>
       <div class="hero-proof"><span>01 <b>Describe</b></span><span>02 <b>Design</b></span><span>03 <b>Export</b></span></div>
     </div>
@@ -20,7 +20,7 @@ import BaseLayout from "../layouts/BaseLayout.astro";
         <div class="mini-node mini-approval"><span>03</span><div><strong>Human review</strong><small>Approve external communication</small></div><b>◇</b></div><div class="mini-link">↓</div>
         <div class="mini-done"><span>✓</span><div><strong>Verify & record outcome</strong><small>Success only after confirmation</small></div></div>
       </div>
-      <div class="product-window-bottom"><span><i></i> Blueprint ready to customize</span><span>JSON + Markdown export</span></div>
+      <div class="product-window-bottom"><span><i></i> Blueprint ready to customize</span><span>JSON + Markdown</span></div>
     </div>
   </div>
   <section class="section feature-section"><div class="wrap"><div class="section-head"><div><span class="eyebrow">More than a checklist</span><h2>A blueprint you can put to work.</h2></div><p>Plan the process, anticipate failure and hand a clear spec to the person building your automation.</p></div>
@@ -33,6 +33,22 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   <section class="section usecase-section"><div class="wrap"><div class="section-head"><div><span class="eyebrow">Start with a common use case</span><h2>Designed for real operational friction.</h2></div><p>Start from a common pattern, then customize it for your business and chosen tools.</p></div>
     <div class="usecase-grid"><a href="/builder/" class="usecase"><span>01 / CLIENT OPERATIONS</span><strong>Onboard every client consistently</strong><small>Intake → workspace → approvals → handoff ↗</small></a><a href="/builder/" class="usecase"><span>02 / SALES</span><strong>Follow up with new leads</strong><small>Capture → validate → assign → follow-up ↗</small></a><a href="/builder/" class="usecase"><span>03 / CONTENT</span><strong>Move content from brief to review</strong><small>Brief → draft → approval → publish ↗</small></a></div>
   </div></section>
-  <section class="section"><div class="wrap"><div class="banner"><div><h2>Start with the process. Build with confidence.</h2><p>Get a practical blueprint, then test it before connecting live systems.</p></div><a class="btn btn-primary" href="/builder/">Build my workflow ↗</a></div></div></section>
+  <section class="section"><div class="wrap"><div class="banner"><div><h2>Start with the process. Build with confidence.</h2><p>Get a practical blueprint, then test it before connecting live systems.</p></div><a class="btn btn-primary" href="/sample/">View sample output ↗</a></div></div></section>
   <section class="section resource-section"><div class="wrap"><div class="section-head"><div><span class="eyebrow">Learn the foundations</span><h2>Better workflows start with better thinking.</h2></div><a class="text-link" href="/guides/">Browse all guides →</a></div><div class="cards"><article class="card"><div class="card-icon">◎</div><h3>Find the first process to automate</h3><p>Choose a repetitive, measurable task with clear inputs and outcomes.</p><a class="text-link" href="/guides/first-workflow-to-automate/">Read guide →</a></article><article class="card"><div class="card-icon">⛨</div><h3>Design safer AI workflows</h3><p>Keep permissions, approval gates and failure handling in the design.</p><a class="text-link" href="/guides/safer-ai-workflows/">Read guide →</a></article><article class="card"><div class="card-icon">↗</div><h3>Make client onboarding repeatable</h3><p>Turn the first few days of a client relationship into a reliable process.</p><a class="text-link" href="/guides/client-onboarding-process/">Read guide →</a></article></div></div></section>
+  <section class="section"><div class="wrap"><div class="banner"><div><span class="eyebrow">Launch notes</span><h2>Get the Agency Starter Pack update.</h2><p>Leave your email if you want to hear when tested workflow packs are ready. Email delivery is not yet automated.</p></div><form id="lead-form" style="display:flex;flex-wrap:wrap;gap:10px;min-width:min(100%,330px)"><label for="lead-email" class="notice" style="width:100%">Email address</label><input id="lead-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@company.com" style="min-width:210px;flex:1;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0c111a;color:#eaf0ff" /><button class="btn btn-primary" type="submit">Keep me updated ↗</button><label class="notice" style="width:100%;display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="lead-consent" required style="margin-top:3px" /> I agree to receive occasional product launch updates. I can ask to be removed.</label><p id="lead-status" class="notice" role="status" style="width:100%;margin:0"></p></form></div></div></section>
+  <script>
+    const leadForm = document.querySelector("#lead-form");
+    leadForm?.addEventListener("submit", async event => {
+      event.preventDefault();
+      const status = document.querySelector("#lead-status");
+      status.textContent = "Submitting…";
+      try {
+        const response = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: document.querySelector("#lead-email").value, consent: document.querySelector("#lead-consent").checked, source: "homepage" }) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Signup could not be saved.");
+        status.textContent = data.message || "Thanks for your interest.";
+        leadForm.reset();
+      } catch (error) { status.textContent = error instanceof Error ? error.message : "Signup could not be saved."; }
+    });
+  </script>
 </BaseLayout>

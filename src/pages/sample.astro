@@ -1,0 +1,9 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import sample from "../../templates/agency/client-onboarding.json";
+---
+<BaseLayout title="Sample Workflow Blueprint: Agency Client Onboarding" description="Explore a complete agency client onboarding blueprint with safeguards, approvals and test cases.">
+  <div class="wrap"><div class="page-hero"><span class="eyebrow">Public sample output</span><h1>Client onboarding, <span class="gradient">documented end to end.</span></h1><p>A transparent example of the structured output behind the toolkit. This is a design specification, not a deployed integration.</p><div class="actions"><a class="btn btn-primary" href="/ai-builder/">Generate your own ↗</a><a class="btn btn-secondary" href="/templates/">Browse templates</a></div></div>
+    <section class="panel" style="margin-bottom:24px"><span class="eyebrow">Goal</span><h2>{sample.title}</h2><p class="muted">{sample.goal}</p><div class="plan-block"><span class="eyebrow">Trigger</span><p>{sample.trigger.description}</p></div><div class="plan-block"><span class="eyebrow">Workflow steps</span><ol class="build-steps">{sample.steps.map((step)=><li><strong>{step.name}</strong><p>{step.kind} · {step.tool || "Human / generic"}</p><small>{step.on_error ? "Failure handling: " + step.on_error : "Branching or human review is required"}</small></li>)}</ol></div><div class="plan-block"><span class="eyebrow">Safeguards</span><ul><li>Idempotency key: {sample.safeguards.idempotency_key}</li><li>Maximum retries: {sample.safeguards.max_retries}</li><li>Alert channel: {sample.safeguards.alert_channel}</li></ul></div><div class="plan-block"><span class="eyebrow">Test cases</span><ul>{sample.test_cases.map((test)=><li><strong>{test.name}:</strong> {test.expect}</li>)}</ul></div><a class="text-link" href="/templates/agency/client-onboarding.json" download>Download source blueprint JSON →</a></section>
+  </div>
+</BaseLayout>

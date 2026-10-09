@@ -1,0 +1,91 @@
+{
+  "version": "1.0",
+  "title": "Agency support triage",
+  "goal": "Route support requests by urgency and protect sensitive cases with human review.",
+  "trigger": {
+    "type": "webhook",
+    "description": "A new support ticket is created."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "action",
+      "name": "Validate ticket metadata",
+      "tool": "helpdesk",
+      "inputs": [
+        "ticket_id",
+        "category",
+        "severity"
+      ],
+      "on_error": "stop_and_alert",
+      "next": "s2"
+    },
+    {
+      "id": "s2",
+      "kind": "decision",
+      "name": "Check urgent risk category",
+      "branches": [
+        {
+          "label": "urgent",
+          "next": "s3"
+        },
+        {
+          "label": "routine",
+          "next": "s4"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "kind": "approval",
+      "name": "Escalate urgent ticket to human",
+      "approver": "on-call support lead",
+      "next": "s5"
+    },
+    {
+      "id": "s4",
+      "kind": "action",
+      "name": "Assign routine ticket queue",
+      "tool": "helpdesk",
+      "inputs": [
+        "category",
+        "owner"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s5"
+    },
+    {
+      "id": "s5",
+      "kind": "verify",
+      "name": "Verify owner and ticket status",
+      "tool": "helpdesk"
+    }
+  ],
+  "safeguards": {
+    "idempotency_key": "ticket_id",
+    "max_retries": 2,
+    "alert_channel": "support-operations"
+  },
+  "test_cases": [
+    {
+      "name": "Happy path",
+      "input": "routine ticket with valid metadata",
+      "expect": "ticket assigned and verified"
+    },
+    {
+      "name": "Duplicate event",
+      "input": "same ticket webhook twice",
+      "expect": "no duplicate ticket or notification"
+    },
+    {
+      "name": "Bad input",
+      "input": "missing ticket ID",
+      "expect": "stop and alert"
+    },
+    {
+      "name": "Provider failure",
+      "input": "helpdesk unavailable",
+      "expect": "bounded retry and escalation"
+    }
+  ]
+}

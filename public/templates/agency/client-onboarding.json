@@ -1,0 +1,105 @@
+{
+  "version": "1.0",
+  "title": "Agency client onboarding",
+  "goal": "Create a consistent onboarding process for every newly won client.",
+  "trigger": {
+    "type": "webhook",
+    "description": "CRM marks a deal as won."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "action",
+      "name": "Validate client details",
+      "tool": "crm",
+      "inputs": [
+        "name",
+        "email",
+        "scope",
+        "owner"
+      ],
+      "on_error": "stop_and_alert",
+      "next": "s2"
+    },
+    {
+      "id": "s2",
+      "kind": "decision",
+      "name": "Check for existing client",
+      "branches": [
+        {
+          "label": "yes",
+          "next": "s4"
+        },
+        {
+          "label": "no",
+          "next": "s3"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "kind": "action",
+      "name": "Create project workspace",
+      "tool": "project_tool",
+      "inputs": [
+        "client name",
+        "template",
+        "owner"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s4"
+    },
+    {
+      "id": "s4",
+      "kind": "approval",
+      "name": "Approve welcome email",
+      "approver": "account manager",
+      "next": "s5"
+    },
+    {
+      "id": "s5",
+      "kind": "action",
+      "name": "Send approved welcome email",
+      "tool": "email",
+      "inputs": [
+        "approved template",
+        "client email"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s6"
+    },
+    {
+      "id": "s6",
+      "kind": "verify",
+      "name": "Verify workspace and email status",
+      "tool": "generic"
+    }
+  ],
+  "safeguards": {
+    "idempotency_key": "client_email_or_crm_id",
+    "max_retries": 2,
+    "alert_channel": "agency operations"
+  },
+  "test_cases": [
+    {
+      "name": "Happy path",
+      "input": "valid new client",
+      "expect": "workspace created and approved email recorded"
+    },
+    {
+      "name": "Duplicate event",
+      "input": "same CRM deal event twice",
+      "expect": "no duplicate workspace or email"
+    },
+    {
+      "name": "Bad input",
+      "input": "missing client email",
+      "expect": "stop and alert owner"
+    },
+    {
+      "name": "Provider failure",
+      "input": "project tool timeout",
+      "expect": "bounded retry then alert"
+    }
+  ]
+}
