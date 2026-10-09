@@ -8,6 +8,7 @@ A browser-first workflow design toolkit for small agencies and solo operators. T
 **Templates:** https://ai-workflow-toolkit.pages.dev/templates/
 
 ## What's included
+- Ten practical guide pages covering onboarding, lead follow-up, testing, n8n error handling, duplicate prevention, approvals and reporting.
 - Existing local, rule-based workflow builder and editable ready-to-use message.
 - Blueprint contract, validation and deterministic Markdown/n8n scaffold exporter.
 - Five agency workflow blueprint templates: client onboarding, lead follow-up, weekly client reporting, content approval and support triage.
