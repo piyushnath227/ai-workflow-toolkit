@@ -12,13 +12,13 @@ A browser-first workflow design toolkit for small agencies and solo operators. T
 - Existing local, rule-based workflow builder and editable ready-to-use message.
 - Blueprint contract, validation and deterministic Markdown/n8n scaffold exporter.
 - Five agency workflow blueprint templates: client onboarding, lead follow-up, weekly client reporting, content approval and support triage.
-- AI generation endpoint using Gemini when configured, with schema validation and deterministic fallback.
+- Provider-independent AI generation endpoint supporting Gemini and Grok, with validation, optional explicit provider failover, safe diagnostics and deterministic fallback.
 - n8n export API, D1 migrations, lead capture endpoint and workflow audit request endpoint.
 - Sample output, templates, pricing, services, about and draft legal pages.
 - Automated Node.js tests and CI build.
 
 ## Important limitations
-The AI generator is **not live until** `GEMINI_API_KEY` is configured in Cloudflare Pages Functions. D1 must be bound as `DB` before live AI generation can be enabled because it tracks anonymous usage. Do not set `TURNSTILE_SECRET_KEY` until the client widget is implemented and sending tokens. No checkout, paid subscription, magic-link login, or saved-workflow API is active. The D1 schema is groundwork, not a complete account system.
+The AI generator needs at least one provider secret in Cloudflare Pages Functions: `GEMINI_API_KEY` and/or `GROK_API_KEY`. D1 must be bound as `DB` before any live AI provider call because it tracks anonymous usage. The default provider is Gemini when configured, otherwise Grok; `AI_PROVIDER=auto` explicitly enables Gemini-first/Grok-second failover and can incur Grok charges. Read [AI provider configuration](docs/ai-providers.md) before enabling Grok or automatic failover. Do not set `TURNSTILE_SECRET_KEY` until the client widget is implemented and sending tokens. No checkout, paid subscription, magic-link login, or saved-workflow API is active. The D1 schema is groundwork, not a complete account system.
 
 The n8n exporter creates an **inactive scaffold**, not a production-ready integration. It uses placeholder actions and placeholder validation conditions. Import the output into a current n8n instance, wire decision branches and human approval behavior, add persistent idempotency storage, configure credentials and test all failure cases in a sandbox before using it in production or selling it as tested.
 
@@ -38,7 +38,7 @@ npm run dev
 - Build output directory: `dist`
 - Root directory: repository root
 - Apply `migrations/0001_initial.sql` to a Cloudflare D1 database and bind it as `DB` only when enabling API storage.
-- Secrets: `GEMINI_API_KEY`; optional Turnstile server secret only after client integration. Never commit secrets.
+- Provider secrets and selection: [docs/ai-providers.md](docs/ai-providers.md). Never commit API keys.
 - Setup steps and a free-first stack: [docs/free-first-launch.md](docs/free-first-launch.md)
 - Production limitations: [docs/production-readiness.md](docs/production-readiness.md)
 
