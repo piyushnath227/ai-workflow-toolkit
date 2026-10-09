@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Client onboarding automation for small agencies | AI Workflow Toolkit" description="A practical blueprint for intake validation, project setup, welcome messages and a verified handoff.">
+  <div class="wrap"><article class="article page-hero"><span class="eyebrow">Client operations · Practical guide</span><h1>Client onboarding automation for small agencies.</h1><p>A practical blueprint for intake validation, project setup, welcome messages and a verified handoff.</p><div class="article-callout">Principle: document the expected outcome, the failure path and the proof of completion before connecting live systems.</div>
+<h2>Start with a trigger</h2><p>Choose one trusted event, such as a CRM deal moving to won. Record a stable client or deal ID so webhook retries do not create duplicate projects.</p>
+<h2>Validate before creating records</h2><p>Check required fields, owner, scope, start date and consent before downstream actions. Route missing fields back to a named person rather than guessing.</p>
+<h2>Keep the welcome message behind approval</h2><p>Generate a draft from an approved template and require an account manager to review it before external delivery. Do not request passwords or API keys in ordinary email.</p>
+<h2>Verify the result</h2><p>Check that the workspace exists, the owner is assigned and the email provider confirms delivery. Record the run ID and links to the source records.</p>
+<h2>Test before launch</h2><p>Test a valid client, a repeated trigger, missing email, project tool outage and rejected approval. Use synthetic data and a sandbox first.</p>
+<h2>Use the toolkit</h2><p>Turn this advice into a structured workflow, then test it with synthetic data before production.</p><p class="article-cta"><a class="btn btn-primary" href="/builder/">Build a workflow ↗</a> <a class="btn btn-secondary" href="/templates/">Browse agency templates</a></p></article></div>
+</BaseLayout>
