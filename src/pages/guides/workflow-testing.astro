@@ -1,0 +1,12 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="How to test an automation before production | AI Workflow Toolkit" description="A repeatable test checklist for happy paths, duplicates, bad inputs and provider failures.">
+  <div class="wrap"><article class="article page-hero"><span class="eyebrow">Testing · Practical guide</span><h1>How to test an automation before production.</h1><p>A repeatable test checklist for happy paths, duplicates, bad inputs and provider failures.</p><div class="article-callout">Principle: document the expected outcome, the failure path and the proof of completion before connecting live systems.</div>
+<h2>Define observable success</h2><p>Write down the exact target state. A successful HTTP response alone may not prove that a record, task or message exists.</p>
+<h2>Test the happy path</h2><p>Use synthetic input and check every expected state change, including the owner, timestamps, source links and final verification.</p>
+<h2>Test failure paths</h2><p>Remove a required field, replay the same event, simulate a timeout and reject an approval. Confirm each result is safe and visible.</p>
+<h2>Check retries and idempotency</h2><p>Retry only transient errors, cap attempts and use a stable idempotency key to prevent repeated side effects.</p>
+<h2>Release deliberately</h2><p>Import into a staging environment, record the workflow version and test again after changing node versions, credentials or conditions.</p>
+<h2>Use the toolkit</h2><p>Turn this advice into a structured workflow, then test it with synthetic data before production.</p><p class="article-cta"><a class="btn btn-primary" href="/builder/">Build a workflow ↗</a> <a class="btn btn-secondary" href="/templates/">Browse agency templates</a></p></article></div>
+</BaseLayout>
