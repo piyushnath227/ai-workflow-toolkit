@@ -1,0 +1,89 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+---
+<BaseLayout title="Free Client Onboarding Checklist Generator | AI Workflow Toolkit" description="Generate a customizable client onboarding checklist for your service business. Free, instant, and private in your browser.">
+  <div class="wrap">
+    <div class="page-hero"><span class="eyebrow">Free workflow tool</span><h1>A better client start, <span class="gradient">in a few clicks.</span></h1><p>Generate a practical onboarding checklist tailored to your service and timeline. Edit it, tick off tasks, or copy it into your project tool.</p></div>
+    <div class="tool-layout">
+      <form class="panel" id="generator">
+        <h2>Set up your project</h2><p class="muted" style="font-size:13px;line-height:1.6">Choose the closest match. You can customize the output after it's generated.</p>
+        <div class="field"><label for="clientType">Client type</label><select id="clientType"><option value="small-business">Small business</option><option value="startup">Startup</option><option value="creator">Creator / personal brand</option><option value="enterprise">Larger organization</option><option value="nonprofit">Nonprofit</option></select></div>
+        <div class="field"><label for="projectType">Project type</label><select id="projectType"><option value="marketing">Marketing / content</option><option value="website">Website / development</option><option value="automation">Automation / AI workflow</option><option value="consulting">Consulting / strategy</option><option value="design">Branding / design</option></select></div>
+        <div class="field"><label for="service">Main service or deliverable</label><input id="service" type="text" placeholder="e.g. Monthly SEO and content" maxlength="100" /></div>
+        <div class="field"><label for="timeline">Project timeline</label><select id="timeline"><option value="1-week">1 week or less</option><option value="2-4-week" selected>2–4 weeks</option><option value="1-3-month">1–3 months</option><option value="ongoing">Ongoing / retainer</option></select></div>
+        <button class="btn btn-primary" type="submit" style="width:100%">Generate my checklist ↗</button>
+        <p class="notice">Privacy note: this tool runs in your browser. Your entries are not sent to a server.</p>
+      </form>
+      <section class="panel" aria-live="polite">
+        <div class="result-top"><h2>Your onboarding plan</h2><span class="pill" id="task-count">Starter plan</span></div>
+        <p class="muted" id="result-intro" style="font-size:13px;line-height:1.7">Complete the form and generate your tailored list. Check off tasks as you go.</p>
+        <div id="result"><div class="empty-state">Your checklist will appear here.<br />A clear start makes a better client relationship.</div></div>
+        <div class="actions" id="result-actions" hidden><button class="btn btn-secondary" type="button" id="copy">Copy checklist</button><button class="btn btn-secondary" type="button" id="download">Download .txt</button></div>
+        <p class="success" id="feedback" role="status"></p>
+      </section>
+    </div>
+  </div>
+  <script>
+    const form = document.querySelector("#generator");
+    const result = document.querySelector("#result");
+    const actions = document.querySelector("#result-actions");
+    const count = document.querySelector("#task-count");
+    const intro = document.querySelector("#result-intro");
+    const feedback = document.querySelector("#feedback");
+    const common = [
+      ["Confirm project goals and measurable outcomes","Align on what success means before work starts."],
+      ["Send welcome email and next-step summary","Make the first experience clear and professional."],
+      ["Share scope, deliverables and exclusions","Document what is and is not included."],
+      ["Confirm decision-makers and communication channel","Avoid slow approvals and scattered conversations."],
+      ["Agree on milestones, deadlines and review windows","Set a realistic delivery rhythm."],
+      ["Collect invoice details and confirm payment terms","Make the commercial side clear."],
+      ["Create shared project space and task board","Give everyone one place to find updates."],
+      ["Schedule kickoff or discovery meeting","Confirm priorities, dependencies and open questions."]
+    ];
+    const extras = {
+      marketing:[["Collect brand voice, audience and existing analytics","Gather messaging, customer profiles and baseline metrics."],["Request access to website and marketing platforms","Use approved, least-privilege access and a secure password manager."],["Agree on content approval and publishing workflow","Define who reviews, how feedback is collected and who publishes."]],
+      website:[["Collect brand assets, copy, domain and hosting details","Identify who owns each account and asset."],["Document required pages, integrations and acceptance criteria","Turn assumptions into a reviewable scope."],["Confirm staging, feedback and launch process","Agree how changes are reviewed before production."]],
+      automation:[["Map the current process and its pain points","Record the trigger, steps, handoffs and exceptions."],["List tools, permissions and data sources needed","Use approved access and avoid sharing secrets in documents."],["Define failure handling and human approval points","Decide what happens when an integration or AI step fails."]],
+      consulting:[["Collect background documents and current-state metrics","Ask for relevant reports, process notes and existing research."],["Identify stakeholders and schedule discovery interviews","Make sure the right perspectives are represented."],["Agree on findings format and decision checkpoints","Define how recommendations will be evaluated."]],
+      design:[["Collect brand guidelines, references and existing assets","Align on visual direction and source files."],["Agree on review rounds and feedback owner","Prevent conflicting feedback and uncontrolled revisions."],["Confirm file formats, handoff specs and usage rights","Document what will be delivered and how it can be used."]]
+    };
+    const clientExtras = {
+      startup:[["Confirm founder priorities and who makes final decisions","Keep decisions moving with one accountable owner."]],
+      enterprise:[["Confirm procurement, security and legal requirements","Allow time for internal approvals before delivery starts."]],
+      creator:[["Confirm audience, platform access and personal brand voice","Keep the work aligned with the creator's audience and style."]],
+      nonprofit:[["Confirm mission priorities, beneficiary needs and constraints","Keep the work grounded in the organization's goals."]]
+    };
+    let currentTasks = [];
+    function generate(e){
+      e.preventDefault();
+      const client = document.querySelector("#clientType").value;
+      const project = document.querySelector("#projectType").value;
+      const service = document.querySelector("#service").value.trim();
+      const timeline = document.querySelector("#timeline").value;
+      currentTasks = [...common.slice(0,4), ...(extras[project] || []), ...common.slice(4,8), ...(clientExtras[client] || [])];
+      if(timeline === "1-week") currentTasks.push(["Confirm a short daily check-in and fast approval path","Short timelines need quick decisions and visible blockers."]);
+      if(timeline === "1-3-month" || timeline === "ongoing") currentTasks.push(["Set recurring status reviews and milestone checkpoints","Review progress, risks and upcoming decisions at a predictable cadence."]);
+      const title = service ? service : ({marketing:"Marketing project",website:"Website project",automation:"Automation project",consulting:"Consulting project",design:"Design project"}[project]);
+      intro.textContent = title + " · " + ({ "small-business":"Small business",startup:"Startup",creator:"Creator / personal brand",enterprise:"Larger organization",nonprofit:"Nonprofit"}[client]) + " · " + ({ "1-week":"1 week or less","2-4-week":"2–4 weeks","1-3-month":"1–3 months",ongoing:"Ongoing"}[timeline]);
+      count.textContent = currentTasks.length + " tasks";
+      result.replaceChildren();
+      const list = document.createElement("ul"); list.className = "checklist";
+      currentTasks.forEach(([title, detail], index) => {
+        const li = document.createElement("li");
+        const checkbox = document.createElement("input"); checkbox.type="checkbox"; checkbox.id="task-"+index;
+        const label = document.createElement("label"); label.htmlFor=checkbox.id;
+        const strong = document.createElement("strong"); strong.textContent=title;
+        const small = document.createElement("span"); small.textContent=" — "+detail; small.style.color="#9ba7bd";
+        label.append(strong, small); li.append(checkbox,label); list.append(li);
+      });
+      result.append(list); actions.hidden=false; feedback.textContent="";
+    }
+    function textForChecklist(){
+      const title = document.querySelector("#service").value.trim() || "Client onboarding";
+      return title + "\nAI Workflow Toolkit — Client onboarding checklist\n\n" + [...result.querySelectorAll("li")].map(li => (li.querySelector("input").checked ? "[x] " : "[ ] ") + li.querySelector("strong").textContent + li.querySelector("span").textContent).join("\n");
+    }
+    form.addEventListener("submit",generate);
+    document.querySelector("#copy").addEventListener("click",async()=>{try{await navigator.clipboard.writeText(textForChecklist());feedback.textContent="Checklist copied. Paste it into your preferred project tool.";}catch{feedback.textContent="Copy is unavailable in this browser. Use Download .txt instead."; }});
+    document.querySelector("#download").addEventListener("click",()=>{const blob=new Blob([textForChecklist()],{type:"text/plain;charset=utf-8"});const url=URL.createObjectURL(blob);const a=document.createElement("a");a.href=url;a.download="client-onboarding-checklist.txt";a.click();URL.revokeObjectURL(url);feedback.textContent="Checklist downloaded.";});
+  </script>
+</BaseLayout>
