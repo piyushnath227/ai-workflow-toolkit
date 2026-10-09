@@ -1,0 +1,98 @@
+{
+  "version": "1.0",
+  "title": "Weekly client report",
+  "goal": "Prepare a source-linked weekly report and require review before sending.",
+  "trigger": {
+    "type": "schedule",
+    "description": "Scheduled weekly run at the configured timezone."
+  },
+  "steps": [
+    {
+      "id": "s1",
+      "kind": "action",
+      "name": "Collect reporting data",
+      "tool": "analytics_and_project_tools",
+      "inputs": [
+        "reporting period",
+        "approved sources"
+      ],
+      "on_error": "retry_then_alert",
+      "next": "s2"
+    },
+    {
+      "id": "s2",
+      "kind": "decision",
+      "name": "Validate data completeness",
+      "branches": [
+        {
+          "label": "complete",
+          "next": "s3"
+        },
+        {
+          "label": "incomplete",
+          "next": "s5"
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "kind": "action",
+      "name": "Draft source-linked report",
+      "tool": "reporting_template",
+      "inputs": [
+        "validated metrics",
+        "source links"
+      ],
+      "on_error": "stop_and_alert",
+      "next": "s4"
+    },
+    {
+      "id": "s4",
+      "kind": "approval",
+      "name": "Review report before sending",
+      "approver": "account manager",
+      "next": "s6"
+    },
+    {
+      "id": "s5",
+      "kind": "recovery",
+      "name": "Request missing data",
+      "tool": "operations_alert",
+      "on_error": "stop_and_alert",
+      "next": "s6"
+    },
+    {
+      "id": "s6",
+      "kind": "verify",
+      "name": "Verify delivery and archive",
+      "tool": "report_destination"
+    }
+  ],
+  "safeguards": {
+    "idempotency_key": "client_id_reporting_period",
+    "max_retries": 2,
+    "alert_channel": "agency operations"
+  },
+  "test_cases": [
+    {
+      "name": "Happy path",
+      "input": "complete source data",
+      "expect": "reviewed report delivered and archived"
+    },
+    {
+      "name": "Duplicate event",
+      "input": "same client and week runs twice",
+      "expect": "duplicate report delivery is prevented"
+    },
+    {
+      "name": "Bad input",
+      "input": "missing source data",
+      "expect": "report is held and owner notified"
+    },
+    {
+      "name": "Provider failure",
+      "input": "analytics API unavailable",
+      "expect": "bounded retry and alert"
+    }
+  ]
+}
