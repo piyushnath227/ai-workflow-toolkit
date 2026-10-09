@@ -14,6 +14,8 @@ const { title = "AI Workflow Toolkit | Workflows that run smoother", description
     <meta property="og:type" content="website" />
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical + Astro.url.pathname} />
+    <meta property="og:site_name" content="AI Workflow Toolkit" />
     <title>{title}</title>
   </head>
   <body>
@@ -21,11 +23,12 @@ const { title = "AI Workflow Toolkit | Workflows that run smoother", description
       <div class="wrap nav">
         <a class="brand" href="/" aria-label="AI Workflow Toolkit home"><span class="brand-mark">A</span><span>AI Workflow Toolkit</span></a>
         <nav class="nav-links" aria-label="Main navigation">
-          <a href="/onboarding/">Free tool</a>
+          <a href="/builder/">Workflow Builder</a>
+          <a href="/onboarding/" class="hide-small">Checklist</a>
           <a href="/guides/" class="hide-small">Guides</a>
           <a href="/toolkit/" class="hide-small">Toolkit</a>
         </nav>
-        <a class="nav-cta" href="/onboarding/">Build a workflow <span aria-hidden="true">↗</span></a>
+        <a class="nav-cta" href="/builder/">Build a workflow <span aria-hidden="true">↗</span></a>
       </div>
     </header>
     <main><slot /></main>
@@ -33,7 +36,7 @@ const { title = "AI Workflow Toolkit | Workflows that run smoother", description
       <div class="wrap footer-inner">
         <a class="brand" href="/"><span class="brand-mark">A</span><span>AI Workflow Toolkit</span></a>
         <span>Practical systems for better client work.</span>
-        <div class="footer-links"><a href="/guides/">Guides</a><a href="/toolkit/">Toolkit</a><a href="https://github.com/piyushnath227/ai-workflow-toolkit" target="_blank" rel="noreferrer">GitHub ↗</a></div>
+        <div class="footer-links"><a href="/builder/">Workflow Builder</a><a href="/guides/">Guides</a><a href="/toolkit/">Toolkit</a><a href="https://github.com/piyushnath227/ai-workflow-toolkit" target="_blank" rel="noreferrer">GitHub ↗</a></div>
       </div>
     </footer>
   </body>
