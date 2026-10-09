@@ -11,9 +11,11 @@ interface Env {
   DB?: D1Database;
   TURNSTILE_SECRET_KEY?: string;
 }
-interface ProviderDiagnostic { provider: Provider; reason: "http_error" | "invalid_output" | "request_error"; status?: number; }
+interface ProviderDiagnostic { provider: Provider; reason: "http_error" | "invalid_output" | "request_error" | "daily_limit"; status?: number; }
 const MAX_INPUT = 2000;
 const DAILY_ANON_LIMIT = 3;
+// Hard cap on actual Grok API calls across all visitors; increase only after monitoring spend.
+const DAILY_GROK_API_CALL_LIMIT = 5;
 
 export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
   let body: any;
@@ -87,6 +89,10 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     let lastFailure: ProviderDiagnostic | null = null;
     for (let attempt = 0; attempt < 2; attempt++) {
       try {
+        if (provider === "grok" && !(await reserveGrokApiCall(env))) {
+          lastFailure = { provider, reason: "daily_limit" };
+          break;
+        }
         const result = await requestBlueprint(provider, currentPrompt, env);
         const parsed = result.parsed;
         parsed.version = "1.0";
@@ -114,6 +120,16 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
     diagnostics
   );
 };
+
+async function reserveGrokApiCall(env: Env): Promise<boolean> {
+  if (!env.DB) return false;
+  const day = new Date().toISOString().slice(0, 10);
+  // Atomic global reservation: the WHERE clause prevents concurrent requests exceeding the cap.
+  const reserved = await env.DB.prepare("INSERT INTO usage (user_or_ip, day, action, count) VALUES ('global', ?, 'grok_api_call', 1) ON CONFLICT(user_or_ip, day, action) DO UPDATE SET count = count + 1 WHERE count < ? RETURNING count")
+    .bind(day, DAILY_GROK_API_CALL_LIMIT)
+    .first<{ count: number }>();
+  return reserved !== null;
+}
 
 async function requestBlueprint(provider: Provider, prompt: string, env: Env): Promise<{ parsed: any; model: string }> {
   let response: Response;
