@@ -35,4 +35,20 @@ import BaseLayout from "../layouts/BaseLayout.astro";
   </div></section>
   <section class="section"><div class="wrap"><div class="banner"><div><h2>Start with the process. Build with confidence.</h2><p>Get a practical blueprint, then test it before connecting live systems.</p></div><a class="btn btn-primary" href="/sample/">View sample output ↗</a></div></div></section>
   <section class="section resource-section"><div class="wrap"><div class="section-head"><div><span class="eyebrow">Learn the foundations</span><h2>Better workflows start with better thinking.</h2></div><a class="text-link" href="/guides/">Browse all guides →</a></div><div class="cards"><article class="card"><div class="card-icon">◎</div><h3>Find the first process to automate</h3><p>Choose a repetitive, measurable task with clear inputs and outcomes.</p><a class="text-link" href="/guides/first-workflow-to-automate/">Read guide →</a></article><article class="card"><div class="card-icon">⛨</div><h3>Design safer AI workflows</h3><p>Keep permissions, approval gates and failure handling in the design.</p><a class="text-link" href="/guides/safer-ai-workflows/">Read guide →</a></article><article class="card"><div class="card-icon">↗</div><h3>Make client onboarding repeatable</h3><p>Turn the first few days of a client relationship into a reliable process.</p><a class="text-link" href="/guides/client-onboarding-process/">Read guide →</a></article></div></div></section>
+  <section class="section"><div class="wrap"><div class="banner"><div><span class="eyebrow">Launch notes</span><h2>Get the Agency Starter Pack update.</h2><p>Leave your email if you want to hear when tested workflow packs are ready. Email delivery is not yet automated.</p></div><form id="lead-form" style="display:flex;flex-wrap:wrap;gap:10px;min-width:min(100%,330px)"><label for="lead-email" class="notice" style="width:100%">Email address</label><input id="lead-email" name="email" type="email" autocomplete="email" required maxlength="254" placeholder="you@company.com" style="min-width:210px;flex:1;padding:12px;border:1px solid var(--line);border-radius:10px;background:#0c111a;color:#eaf0ff" /><button class="btn btn-primary" type="submit">Keep me updated ↗</button><label class="notice" style="width:100%;display:flex;gap:8px;align-items:flex-start"><input type="checkbox" id="lead-consent" required style="margin-top:3px" /> I agree to receive occasional product launch updates. I can ask to be removed.</label><p id="lead-status" class="notice" role="status" style="width:100%;margin:0"></p></form></div></div></section>
+  <script>
+    const leadForm = document.querySelector("#lead-form");
+    leadForm?.addEventListener("submit", async event => {
+      event.preventDefault();
+      const status = document.querySelector("#lead-status");
+      status.textContent = "Submitting…";
+      try {
+        const response = await fetch("/api/leads", { method: "POST", headers: { "content-type": "application/json" }, body: JSON.stringify({ email: document.querySelector("#lead-email").value, consent: document.querySelector("#lead-consent").checked, source: "homepage" }) });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || "Signup could not be saved.");
+        status.textContent = data.message || "Thanks for your interest.";
+        leadForm.reset();
+      } catch (error) { status.textContent = error instanceof Error ? error.message : "Signup could not be saved."; }
+    });
+  </script>
 </BaseLayout>
